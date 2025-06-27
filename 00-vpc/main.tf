@@ -11,9 +11,9 @@ module "vpc" {
     private_subnet_cidr = var.private_subnet_cidr
     database_subnet_cidr = var.database_subnet_cidr
 
-    is_peering_required = true
+    is_peering_required = false
 }
 
-output "vpc_id" {
-    value = module.vpc.vpc_id
-}
+/* output "vpc_id" {
+    value = module.vpc.vpc_id # Here module.vpc is our module_name, vpc_id is the name by which module people exposing the value.
+} */
