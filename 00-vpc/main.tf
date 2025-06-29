@@ -17,3 +17,15 @@ module "vpc" {
 /* output "vpc_id" {
     value = module.vpc.vpc_id # Here module.vpc is our module_name, vpc_id is the name by which module people exposing the value.
 } */
+
+output "public_subnet_id" {
+    value = module.vpc.public_subnet_ids
+}
+
+output "private_subnet_id" {
+    value = module.vpc.private_subnet_ids
+}
+
+output "databasae_subnet_id" {
+    value = module.vpc.database_subnet_ids
+}
