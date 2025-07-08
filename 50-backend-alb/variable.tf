@@ -5,7 +5,3 @@ variable "project" {
 variable "environment" {
     default = "dev"
 }
-
-variable "private_subnet_ids" {
-  
-}
