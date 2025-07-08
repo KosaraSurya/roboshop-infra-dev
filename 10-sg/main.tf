@@ -50,6 +50,44 @@ module "vpn" {
 
 }
 
+# VPN ports 22, 443, 1194, 943
+resource "aws_security_group_rule" "vpn_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.bastion.sg_id
+}
+
+resource "aws_security_group_rule" "vpn_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.bastion.sg_id
+}
+
+resource "aws_security_group_rule" "vpn_1194" {
+  type              = "ingress"
+  from_port         = 1194
+  to_port           = 1194
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.bastion.sg_id
+}
+
+resource "aws_security_group_rule" "vpn_943" {
+  type              = "ingress"
+  from_port         = 943
+  to_port           = 943
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.bastion.sg_id
+}
+
+
 
 # bastion accepting connections from my laptop
 resource "aws_security_group_rule" "bastion_laptop" {
