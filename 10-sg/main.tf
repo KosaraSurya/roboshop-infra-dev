@@ -50,6 +50,103 @@ module "vpn" {
 
 }
 
+module "mongodb" {
+  #source = "../../terraform-aws-securitygroup"
+  source = "git::https://github.com/KosaraSurya/terraform-aws-securitygroup.git?ref=main"
+  project = var.project
+  environment = var.environment
+
+  sg_name = "mondgodb"
+  sg_description = "Creating SG for mongodb"
+  #vpc_id = data.aws_ssm_parameter.vpc_id.value
+  vpc_id = local.vpc_id
+
+}
+
+module "redis" {
+  #source = "../../terraform-aws-securitygroup"
+  source = "git::https://github.com/KosaraSurya/terraform-aws-securitygroup.git?ref=main"
+  project = var.project
+  environment = var.environment
+
+  sg_name = "redis"
+  sg_description = "Creating SG for redis"
+  #vpc_id = data.aws_ssm_parameter.vpc_id.value
+  vpc_id = local.vpc_id
+
+}
+
+module "mysql" {
+  #source = "../../terraform-aws-securitygroup"
+  source = "git::https://github.com/KosaraSurya/terraform-aws-securitygroup.git?ref=main"
+  project = var.project
+  environment = var.environment
+
+  sg_name = "mysql"
+  sg_description = "Creating SG for mysql"
+  #vpc_id = data.aws_ssm_parameter.vpc_id.value
+  vpc_id = local.vpc_id
+
+}
+
+module "rabbitmq" {
+  #source = "../../terraform-aws-securitygroup"
+  source = "git::https://github.com/KosaraSurya/terraform-aws-securitygroup.git?ref=main"
+  project = var.project
+  environment = var.environment
+
+  sg_name = "rabbitmq"
+  sg_description = "Creating SG for rabbitmq"
+  #vpc_id = data.aws_ssm_parameter.vpc_id.value
+  vpc_id = local.vpc_id
+
+}
+
+
+# mongodb accepting connections VPN
+resource "aws_security_group_rule" "mongodb_vpn" {
+  count = length(var.mondgodb_ports_vpn)
+  type              = "ingress"
+  from_port         = var.mondgodb_ports_vpn[count.index]
+  to_port           = var.mondgodb_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.mongodb.sg_id
+}
+
+# redis accepting connections VPN
+resource "aws_security_group_rule" "redis_vpn" {
+  count = length(var.redis_ports_vpn)
+  type              = "ingress"
+  from_port         = var.redis_ports_vpn[count.index]
+  to_port           = var.redis_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.redis.sg_id
+}
+
+# mysql accepting connections VPN
+resource "aws_security_group_rule" "mysql_vpn" {
+  count = length(var.mysql_ports_vpn)
+  type              = "ingress"
+  from_port         = var.mysql_ports_vpn[count.index]
+  to_port           = var.mysql_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.mysql.sg_id
+}
+
+# rabbitmq accepting connections from VPN
+resource "aws_security_group_rule" "rabbitmq_vpn" {
+  count = length(var.rabbitmq_ports_vpn)
+  type              = "ingress"
+  from_port         = var.rabbitmq_ports_vpn[count.index]
+  to_port           = var.rabbitmq_ports_vpn[count.index]
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.rabbitmq.sg_id
+}
+
 # VPN ports 22, 443, 1194, 943
 resource "aws_security_group_rule" "vpn_ssh" {
   type              = "ingress"
@@ -133,4 +230,8 @@ output "backendLB" {
 
 output "VPN" {
   value = module.vpn.sg_id
+}
+
+output "mongodb" {
+  value = module.mongodb.sg_id
 }
