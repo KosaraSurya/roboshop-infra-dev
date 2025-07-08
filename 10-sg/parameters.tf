@@ -33,3 +33,26 @@ resource "aws_ssm_parameter" "mongodb_sg_id" {
   overwrite   = true
 }
 
+resource "aws_ssm_parameter" "redis_sg_id" {
+  name  = "/${var.project}/${var.environment}/redis_sg_id"
+  type  = "String"
+  value = module.redis.sg_id
+  overwrite   = true
+}
+
+resource "aws_ssm_parameter" "mysql_sg_id" {
+  name  = "/${var.project}/${var.environment}/mysql_sg_id"
+  type  = "String"
+  value = module.mysql.sg_id
+  overwrite   = true
+}
+
+resource "aws_ssm_parameter" "rabbitmq_sg_id" {
+  name  = "/${var.project}/${var.environment}/rabbitmq_sg_id"
+  type  = "String"
+  value = module.rabbitmq.sg_id
+  overwrite   = true
+}
+
+
+
