@@ -54,5 +54,12 @@ resource "aws_ssm_parameter" "rabbitmq_sg_id" {
   overwrite   = true
 }
 
+resource "aws_ssm_parameter" "catalogue_sg_id" {
+  name  = "/${var.project}/${var.environment}/catalogue_sg_id"
+  type  = "String"
+  value = module.rabbitmq.sg_id
+  overwrite   = true
+}
+
 
 
