@@ -26,6 +26,42 @@ module "catalogue" {
 
 }
 
+resource "aws_security_group_rule" "catalogue_bastion_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.bastion.sg_id
+  security_group_id = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_vpn_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_vpn_http" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_backend_alb" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.backend_alb.sg_id
+  security_group_id = module.catalogue.sg_id
+}
+
 #bastion_sg and rules
 module "bastion" {
   #source = "../../terraform-aws-securitygroup"
@@ -248,48 +284,6 @@ resource "aws_security_group_rule" "rabbitmq_vpn" {
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.rabbitmq.sg_id
 }
-
-
-
-# Catalogue
-
-
-resource "aws_security_group_rule" "catalogue_bastion_ssh" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  source_security_group_id = module.bastion.sg_id
-  security_group_id = module.catalogue.sg_id
-}
-
-resource "aws_security_group_rule" "catalogue_vpn_ssh" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  source_security_group_id = module.vpn.sg_id
-  security_group_id = module.catalogue.sg_id
-}
-
-resource "aws_security_group_rule" "catalogue_vpn_http" {
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  source_security_group_id = module.vpn.sg_id
-  security_group_id = module.catalogue.sg_id
-}
-
-resource "aws_security_group_rule" "catalogue_backend_alb" {
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  source_security_group_id = module.backend_alb.sg_id
-  security_group_id = module.catalogue.sg_id
-}
-
 
 
 output "frontend_sg_id" {
