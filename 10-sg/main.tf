@@ -136,7 +136,7 @@ module "mongodb" {
 
 # mongodb accepting connections catalogue
 resource "aws_security_group_rule" "mongodb_catalogue" {
-  count = length(var.mondgodb_ports_vpn)
+  # count = length(var.mondgodb_ports_vpn)
   type              = "ingress"
   from_port         = 27017
   to_port           = 27017
@@ -148,10 +148,12 @@ resource "aws_security_group_rule" "mongodb_catalogue" {
 
 # mongodb accepting connections VPN
 resource "aws_security_group_rule" "mongodb_vpn" {
-  count = length(var.mondgodb_ports_vpn)
+  # count = length(var.mondgodb_ports_vpn)
   type              = "ingress"
-  from_port         = var.mondgodb_ports_vpn[count.index]
-  to_port           = var.mondgodb_ports_vpn[count.index]
+  # from_port         = var.mondgodb_ports_vpn[count.index]
+  # to_port           = var.mondgodb_ports_vpn[count.index]
+  from_port         = 22
+  to_port           = 22
   protocol          = "tcp"
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.mongodb.sg_id
