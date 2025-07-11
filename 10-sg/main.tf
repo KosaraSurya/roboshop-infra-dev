@@ -11,6 +11,21 @@ module "frontend" {
 
 }
 
+#catalogue SG
+
+module "catalogue" {
+  #source = "../../terraform-aws-securitygroup"
+  source = "git::https://github.com/KosaraSurya/terraform-aws-securitygroup.git?ref=main"
+  project = var.project
+  environment = var.environment
+
+  sg_name = "catalogue"
+  sg_description = "Creating SG for catalogue"
+  #vpc_id = data.aws_ssm_parameter.vpc_id.value
+  vpc_id = local.vpc_id
+
+}
+
 #bastion_sg and rules
 module "bastion" {
   #source = "../../terraform-aws-securitygroup"
@@ -237,18 +252,7 @@ resource "aws_security_group_rule" "rabbitmq_vpn" {
 
 
 # Catalogue
-module "catalogue" {
-  #source = "../../terraform-aws-securitygroup"
-  source = "git::https://github.com/KosaraSurya/terraform-aws-securitygroup.git?ref=main"
-  project = var.project
-  environment = var.environment
 
-  sg_name = "catalogue"
-  sg_description = "Creating SG for catalogue"
-  #vpc_id = data.aws_ssm_parameter.vpc_id.value
-  vpc_id = local.vpc_id
-
-}
 
 resource "aws_security_group_rule" "catalogue_bastion_ssh" {
   type              = "ingress"
