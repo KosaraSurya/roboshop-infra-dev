@@ -37,12 +37,14 @@ resource "aws_route53_record" "backend_alb" {
   zone_id = var.zone_id
   name    = "*.backend-${var.environment}.${var.zone_name}"
   type    = "A"
+  allow_overwrite = true
 
   alias {
     name                   = module.backend_alb.dns_name 
     zone_id                = module.backend_alb.zone_id # Here as we are using open module we have to mention ALB zone_id. we have to check their properties they are exposing zoneid as zone_id
     evaluate_target_health = true
   }
+  
 }
   
 
