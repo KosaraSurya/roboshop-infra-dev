@@ -196,6 +196,7 @@ resource "aws_security_group_rule" "mongodb_catalogue" {
 }
 
 
+
 # mongodb accepting connections VPN
 resource "aws_security_group_rule" "mongodb_vpn" {
   count = length(var.mongodb_ports_vpn)
