@@ -187,7 +187,6 @@ module "mongodb" {
 
 # mongodb accepting connections catalogue
 resource "aws_security_group_rule" "mongodb_catalogue" {
-  # count = length(var.mondgodb_ports_vpn)
   type              = "ingress"
   from_port         = 27017
   to_port           = 27017
@@ -199,17 +198,14 @@ resource "aws_security_group_rule" "mongodb_catalogue" {
 
 # mongodb accepting connections VPN
 resource "aws_security_group_rule" "mongodb_vpn" {
-  # count = length(var.mondgodb_ports_vpn)
+  count = length(var.mongodb_ports_vpn)
   type              = "ingress"
-  # from_port         = var.mondgodb_ports_vpn[count.index]
-  # to_port           = var.mondgodb_ports_vpn[count.index]
-  from_port         = 22
-  to_port           = 22
+  from_port         = var.mongodb_ports_vpn[count.index]
+  to_port           = var.mongodb_ports_vpn[count.index]
   protocol          = "tcp"
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.mongodb.sg_id
 }
-
 #redis_sg and rules
 module "redis" {
   #source = "../../terraform-aws-securitygroup"
@@ -304,4 +300,20 @@ output "VPN" {
 
 output "mongodb" {
   value = module.mongodb.sg_id
+}
+
+output "redis" {
+  value = module.redis.sg_id
+}
+
+output "mysql" {
+  value = module.mysql.sg_id
+}
+
+output "rabbitmq" {
+  value = module.rabbitmq.sg_id
+}
+
+output "catalogue" {
+  value = module.catalogue.sg_id
 }

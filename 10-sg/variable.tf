@@ -24,7 +24,7 @@ variable "bastion_sg_description" {
   
 }
 
-variable "mondgodb_ports_vpn" {
+variable "mongodb_ports_vpn" {
     default = [22, 27017]
 }
 
