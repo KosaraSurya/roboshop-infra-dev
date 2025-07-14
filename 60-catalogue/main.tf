@@ -56,3 +56,36 @@ resource "terraform_data" "catalogue" {
     ]
   }
 }
+
+# After configuration we are stopping the instance
+resource "aws_ec2_instance_state" "catalogue" {
+  instance_id = aws_instance.catalogue.id
+  state = "stopped"
+  depends_on = [ terraform_data.catalogue ]
+}
+
+# After instance went to stop state then we will take AMI from it
+resource "aws_ami_from_instance" "catalogue" {
+  name               = "${var.project}-${var.environment}-catalogue"
+  source_instance_id = aws_instance.catalogue.id
+  depends_on = [ aws_ec2_instance_state.catalogue ]
+  tags = merge(
+    local.common_tags,{
+      Name ="${var.project}-${var.environment}-catalogue"
+    }
+  )
+}
+
+# Delete the instance after taking the AMI
+
+resource "terraform_data" "catalogue_delete" {
+  triggers_replace = [
+    aws_instance.catalogue.id
+  ]
+  
+  # Make sure we have aws config in our local
+  provisioner "local-exec" {
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}"
+  }
+  depends_on = [ aws_ami_from_instance.catalogue ]
+}
